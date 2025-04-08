@@ -22,7 +22,7 @@
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             padding: 32px;
-            max-width: 600px;
+            max-width: 1400px;
             width: 100%;
         }
         .card h2 {
@@ -60,6 +60,24 @@
             border-radius: 10px;
             overflow-x: auto;
         }
+        input, button, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0 16px;
+      border-radius: 0.5rem;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+    textarea {
+      font-family: monospace;
+      resize: vertical;
+      background-color: #cacaca;
+    }
     </style>
 </head>
 <body>
@@ -75,11 +93,31 @@
         </div>
         <button onclick="fetchUserData()">Fetch User Data</button>
         <div id="output" style="margin-top: 20px;"></div>
+        <p>Running code:</p>
+        <textarea id="generated_url" readonly rows="20">
+<script src="https://sdk.mukham.in/MAuthN.js"></script>
+
+<script>
+    async function fetchUserData() {
+        
+        const email = //Get this from the form.
+        const appName = //Pre define it for your app
+        const dataFields = ["Name", "Image", "Date-Of-Birth"]; //What data to get
+        try {
+            const userData = await getUserData(email, dataFields, appName); //One simple function call to get the data.
+            Show: userData //This will be the response from the MAuthN server.
+            //You can use this data in your app as per your requirement.
+        } catch (err) {
+            Show: err.message //Handle the error if any.
+        }
+    }
+</script>
+        </textarea>
     </div>
 
     <script>
         async function fetchUserData() {
-		document.getElementById("output").innerHTML = "<p>Authenticate from MAuthN App...</p>";
+            document.getElementById("output").innerHTML = "<p>Authenticate from MAuthN App...</p>";
             const email = document.getElementById("email").value;
             const appName = document.getElementById("appName").value;
             const dataFields = ["Name", "Image", "Date-Of-Birth"];
