@@ -1,0 +1,209 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <title>OAuth Tester - Auth Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      color: #ffffff;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+      background-color: #ffffff;
+      
+       
+      background: linear-gradient(-45deg, #0f092b, #411325, #112c36, #102c26);
+	      background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+      }
+
+    h1, h2 {
+      color: #ffffff;
+    }
+    input, button, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0 16px;
+      border-radius: 0.5rem;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    textarea {
+      font-family: monospace;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+    <h1>OAuth Testing Page - Default to MAuthN</h1>
+  <h2>OAuth Authorization URL Generator</h2>
+  <label>Authorization URL<input id="auth_url" type="text" value="https://mauthn.mukham.in/oauth/authorize"></label>
+  <label>Token URL<input id="token_url" type="text" value="https://mauthn.mukham.in/oauth/token"></label>
+  <label>Client ID<input id="client_id" type="text" value="my_demo_client"></label>
+  <label>Redirect URI (fixed)<input id="redirect_uri" type="text" value="http://localhost/" readonly></label>
+  <label>Scope<input id="scope" type="text" placeholder="openid email profile" value="openid email profile"></label>
+  <label>State <button type="button" onclick="generateRandom('state')">Random</button><input id="state" type="text"></label>
+  <label>Nonce <button type="button" onclick="generateRandom('nonce')">Random</button><input id="nonce" type="text"></label>
+  <button onclick="generateURL()">Generate Auth URL</button>
+  <textarea id="generated_url" readonly rows="3"></textarea>
+  <button onclick="goToAuth()">Submit</button>
+
+  <script>
+    document.getElementById('redirect_uri').value = window.location.href.split('?')[0];
+    function generateRandom(id) {
+      document.getElementById(id).value = Math.random().toString(36).substring(2, 15);
+    }
+
+    function generateURL() {
+      const base = document.getElementById('auth_url').value;
+      const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: document.getElementById('client_id').value,
+        redirect_uri: document.getElementById('redirect_uri').value,
+        scope: document.getElementById('scope').value,
+        state: document.getElementById('state').value,
+        nonce: document.getElementById('nonce').value
+      });
+      const fullUrl = `${base}?${params.toString()}`;
+      document.getElementById('generated_url').value = fullUrl;
+    }
+
+    function goToAuth() {
+      const url = document.getElementById('generated_url').value;
+      if (!url) return;
+      window.open(url, '_blank');
+    }
+  </script>
+
+  <h2>OAuth Callback</h2>
+  <p><strong>Authorization Code:</strong> <span id="code"></span></p>
+  <label>Token URL<input id="token_url" type="text" value="https://mauthn.mukham.in/oauth/token"></label>
+  <label>Client ID<input id="client_id" type="text" value="my_demo_client"></label>
+  <label>Client Secret<input id="client_secret" type="text" value="secret"></label>
+  <label>Redirect URI<input id="redirect_uri2" type="text" value="http://localhost/"></label>
+  <button onclick="generate_curl_exchange()">Generate Exchange Command</button>
+  <label>cURL Command<textarea id="curl_cmd" rows="3" readonly></textarea></label>
+  <button onclick="exchangeCode()">Exchange Code</button>
+  <pre id="token_response"></pre>
+
+  <h3>Refresh Token</h3>
+  <label>Refresh Token<input id="refresh_token" type="text"></label>
+  <button onclick="refreshAccessToken()">Refresh Token</button>
+  <pre id="refresh_response"></pre>
+
+  <div class="endpoint">
+    <h3>API Call #1</h3>
+    <label>Endpoint URL<input id="api1_url" type="text" value="https://mauthn.mukham.in/userinfo"></label>
+    <button onclick="callApi('api1')">Send</button>
+    <pre id="api1_output"></pre>
+  </div>
+  <div class="endpoint">
+    <h3>API Call #2</h3>
+    <label>Endpoint URL<input id="api2_url" type="text" value="https://mauthn.mukham.in/userimage"></label>
+    <button onclick="callApi('api2')">Send</button>
+    <pre id="api2_output"></pre>
+  </div>
+
+  <script>
+    document.getElementById('redirect_uri2').value = window.location.href.split('?')[0];
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    document.getElementById('code').textContent = code;
+
+    function generate_curl_exchange()
+    {
+        const token_url = document.getElementById('token_url').value;
+      const data = {
+        grant_type: 'authorization_code',
+        code,
+        client_id: document.getElementById('client_id').value,
+        client_secret: document.getElementById('client_secret').value,
+        redirect_uri: document.getElementById('redirect_uri').value
+      };
+      const body = new URLSearchParams(data);
+
+      const curl = `curl -X POST ${token_url} -d "${body.toString()}"`;
+      document.getElementById('curl_cmd').value = curl;
+    }
+
+    function exchangeCode() {
+      const token_url = document.getElementById('token_url').value;
+      const data = {
+        grant_type: 'authorization_code',
+        code,
+        client_id: document.getElementById('client_id').value,
+        client_secret: document.getElementById('client_secret').value,
+        redirect_uri: document.getElementById('redirect_uri').value
+      };
+      const body = new URLSearchParams(data);
+
+      const curl = `curl -X POST ${token_url} -d "${body.toString()}"`;
+      document.getElementById('curl_cmd').value = curl;
+
+      fetch(token_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body
+      }).then(res => res.json()).then(json => {
+        document.getElementById('token_response').textContent = JSON.stringify(json, null, 2);
+        if (json.refresh_token) {
+          document.getElementById('refresh_token').value = json.refresh_token;
+        }
+        if (json.access_token) {
+          sessionStorage.setItem('access_token', json.access_token);
+        }
+      });
+    }
+
+    function refreshAccessToken() {
+      const token_url = document.getElementById('token_url').value;
+      const data = {
+        grant_type: 'refresh_token',
+        refresh_token: document.getElementById('refresh_token').value,
+        client_id: document.getElementById('client_id').value,
+        client_secret: document.getElementById('client_secret').value
+      };
+      const body = new URLSearchParams(data);
+
+      fetch(token_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body
+      }).then(res => res.json()).then(json => {
+        document.getElementById('refresh_response').textContent = JSON.stringify(json, null, 2);
+        if (json.access_token) {
+          sessionStorage.setItem('access_token', json.access_token);
+        }
+      });
+    }
+
+    function callApi(id) {
+      const url = document.getElementById(`${id}_url`).value;
+      const token = sessionStorage.getItem('access_token');
+      fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => res.json()).then(json => {
+        document.getElementById(`${id}_output`).textContent = JSON.stringify(json, null, 2);
+      });
+    }
+  </script>
+</body>
+</html>

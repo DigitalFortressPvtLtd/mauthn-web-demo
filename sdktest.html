@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MAuthN.js SDK Demo</title>
+    <script src="https://sdk.mukham.in/MAuthN.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(-45deg, #0f092b, #411325, #112c36, #102c26);
+	      background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .card h2 {
+            margin-top: 0;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4A90E2;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 16px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>MAuthN.js SDK Demo</h2>
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="user@example.com">
+        </div>
+        <div class="input-group">
+            <label for="appName">App Name</label>
+            <input type="text" id="appName" value="MAuthN.js SDK demo" readonly>
+        </div>
+        <button onclick="fetchUserData()">Fetch User Data</button>
+        <div id="output" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        async function fetchUserData() {
+            const email = document.getElementById("email").value;
+            const appName = document.getElementById("appName").value;
+            const dataFields = ["Name", "Image", "Date-Of-Birth"];
+
+            try {
+                const userData = await getUserData(email, dataFields, appName);
+                document.getElementById("output").innerHTML =
+                    `<h3>Response</h3><pre>${JSON.stringify(JSON.parse(userData), null, 2)}</pre>`;
+            } catch (err) {
+                document.getElementById("output").innerHTML =
+                    `<h3 style="color:red;">Error</h3><pre>${err.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>
