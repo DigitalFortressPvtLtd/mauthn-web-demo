@@ -79,6 +79,7 @@
 
     <script>
         async function fetchUserData() {
+		document.getElementById("output").innerHTML = "<p>Authenticate from MAuthN App...</p>";
             const email = document.getElementById("email").value;
             const appName = document.getElementById("appName").value;
             const dataFields = ["Name", "Image", "Date-Of-Birth"];
