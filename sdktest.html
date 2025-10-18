@@ -3,134 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <title>MAuthN.js SDK Demo</title>
-    <script src="https://sdk.mukham.in/MAuthN.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(-45deg, #0f092b, #411325, #112c36, #102c26);
-	      background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-        }
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 32px;
-            max-width: 1400px;
-            width: 100%;
-        }
-        .card h2 {
-            margin-top: 0;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 6px;
-        }
-        input[type="email"], input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #4A90E2;
-            color: white;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #357ABD;
-        }
-        pre {
-            background-color: #f0f0f0;
-            padding: 16px;
-            border-radius: 10px;
-            overflow-x: auto;
-        }
-        input, button, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0 16px;
-      border-radius: 0.5rem;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    button:hover {
-      background: #2563eb;
-    }
-    textarea {
-      font-family: monospace;
-      resize: vertical;
-      background-color: #cacaca;
-    }
+    <script src="https://sdk.mukham.in/MAuthN.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Dark Mode (Default) */
+            --bg-color: #202124;
+            --card-bg-color: #292a2d;
+            --border-color: #3c4043;
+            --input-bg: #202124;
+            --text-color-primary: #e8eaed;
+            --text-color-secondary: #bdc1c6;
+            --link-color: #8ab4f8;
+            --button-bg-color: #8ab4f8;
+            --button-text-color: #202124;
+            --button-hover-bg: #9ac0fa;
+            --error-color: #f28b82;
+        }
+
+        body.light-mode {
+            /* Light Mode Palette */
+            --bg-color: #f8f9fa;
+            --card-bg-color: #ffffff;
+            --border-color: #dadce0;
+            --input-bg: #f1f3f4;
+            --text-color-primary: #202124;
+            --text-color-secondary: #5f6368;
+            --link-color: #1a73e8;
+            --button-bg-color: #1a73e8;
+            --button-text-color: #ffffff;
+            --button-hover-bg: #1b66c9;
+            --error-color: #d93025;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color-primary);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 2rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px; /* Wider container for two columns */
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .logo-title { display: flex; align-items: center; gap: 1rem; }
+        .logo { width: 40px; height: 40px; }
+        .header h1 { font-family: 'Google Sans', sans-serif; font-size: 24px; font-weight: 500; }
+        
+        .card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-panel, .code-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .demo-panel h2, .code-panel h2 {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-color-secondary); }
+        input {
+            width: 100%; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color);
+            font-size: 1rem; background-color: var(--input-bg); color: var(--text-color-primary);
+            transition: all 0.2s ease;
+        }
+        input:focus { outline: none; border-color: var(--link-color); box-shadow: 0 0 0 1px var(--link-color); }
+        input[readonly] { background-color: var(--border-color); color: var(--text-color-secondary); cursor: not-allowed; }
+
+        .btn {
+            background-color: var(--button-bg-color); color: var(--button-text-color);
+            border: none; border-radius: 4px; padding: 10px 16px; font-size: 14px;
+            font-weight: 500; font-family: 'Google Sans', sans-serif; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover { background-color: var(--button-hover-bg); }
+        
+        #output { margin-top: 1rem; }
+        #output h3 { font-family: 'Google Sans', sans-serif; font-weight: 500; margin-bottom: 0.5rem; }
+        #output h3.error { color: var(--error-color); }
+        
+        pre, textarea {
+            background-color: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 4px; padding: 1rem; color: var(--text-color-secondary);
+            font-family: 'Roboto Mono', monospace; font-size: 0.875rem;
+            white-space: pre-wrap; word-break: break-all; min-height: 150px;
+            width: 100%; resize: vertical;
+        }
+
+        #theme-toggle {
+            width: 40px; height: 40px; background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color); border-radius: 50%;
+            cursor: pointer; display: grid; place-items: center;
+        }
+        #theme-toggle .icon { width: 20px; height: 20px; fill: var(--text-color-secondary); }
+        .icon-sun { display: none; }
+        .icon-moon { display: block; }
+        body.light-mode .icon-sun { display: block; }
+        body.light-mode .icon-moon { display: none; }
+        
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .card { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>MAuthN.js SDK Demo</h2>
-        <div class="input-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="user@example.com">
-        </div>
-        <div class="input-group">
-            <label for="appName">App Name</label>
-            <input type="text" id="appName" value="MAuthN.js SDK demo" readonly>
-        </div>
-        <button onclick="fetchUserData()">Fetch User Data</button>
-        <div id="output" style="margin-top: 20px;"></div>
-        <p>Running code:</p>
-        <textarea id="generated_url" readonly rows="20">
-<script src="https://sdk.mukham.in/MAuthN.js"></script>
+    <div class="container">
+        <header class="header">
+            <div class="logo-title">
+                <img src="https://mauthn.mukham.in/logo.png" alt="MAuthN Logo" class="logo">
+                <h1>MAuthN.js SDK Demo</h1>
+            </div>
+            <button id="theme-toggle" title="Toggle light/dark theme">
+                <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.64 5.64c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.06 1.06c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41L5.64 5.64zm12.73 12.73c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.06 1.06c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.06-1.06zM18.36 5.64l-1.06 1.06c-.39.39-.39 1.02 0 1.41s1.02.39 1.41 0l1.06-1.06c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0zM6.7 17.3c-.39.39-.39 1.02 0 1.41l1.06 1.06c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41l-1.06-1.06c-.39-.39-1.02-.39-1.41 0z"/></svg>
+                <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg>
+            </button>
+        </header>
 
-<script>
-    async function fetchUserData() {
-        
-        const email = //Get this from the form.
-        const appName = //Pre define it for your app
-        const dataFields = ["Name", "Image", "Date-Of-Birth"]; //What data to get
-        try {
-            const userData = await getUserData(email, dataFields, appName); //One simple function call to get the data.
-            Show: userData //This will be the response from the MAuthN server.
-            //You can use this data in your app as per your requirement.
-        } catch (err) {
-            Show: err.message //Handle the error if any.
-        }
+        <div class="card">
+            <div class="demo-panel">
+                <h2>Live Demo</h2>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="user@example.com">
+                </div>
+                <div class="input-group">
+                    <label for="appName">App Name</label>
+                    <input type="text" id="appName" value="MAuthN.js SDK demo" readonly>
+                </div>
+                <button onclick="fetchUserData()" class="btn">Fetch User Data</button>
+                <div id="output"></div>
+            </div>
+            <div class="code-panel">
+                <h2>Example Code</h2>
+                <textarea id="generated_url" readonly rows="20">
+&lt;script src="https://sdk.mukham.in/MAuthN.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  async function fetchUserData() {
+    const email = document.getElementById("email").value;
+    const appName = "MAuthN.js SDK demo"; // Pre-define for your app
+    const dataFields = ["Name", "Image", "Date-Of-Birth"]; // Data to request
+
+    try {
+      // One simple function call to get the data
+      const userData = await getUserData(email, dataFields, appName);
+      
+      // Use this data in your app as per your requirement.
+      console.log(JSON.parse(userData));
+
+    } catch (err) {
+      // Handle the error if any
+      console.error(err.message);
     }
-</script>
-        </textarea>
+  }
+&lt;/script&gt;
+                </textarea>
+            </div>
+        </div>
     </div>
 
     <script>
         async function fetchUserData() {
-            document.getElementById("output").innerHTML = "<p>Authenticate from MAuthN App...</p>";
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = `<p>${'Authenticating... Please approve the request from your MAuthN App.'}</p>`;
+            
             const email = document.getElementById("email").value;
             const appName = document.getElementById("appName").value;
             const dataFields = ["Name", "Image", "Date-Of-Birth"];
 
             try {
                 const userData = await getUserData(email, dataFields, appName);
-                document.getElementById("output").innerHTML =
-                    `<h3>Response</h3><pre>${JSON.stringify(JSON.parse(userData), null, 2)}</pre>`;
+                outputDiv.innerHTML = `<h3>Response</h3><pre>${JSON.stringify(JSON.parse(userData), null, 2)}</pre>`;
             } catch (err) {
-                document.getElementById("output").innerHTML =
-                    `<h3 style="color:red;">Error</h3><pre>${err.message}</pre>`;
+                outputDiv.innerHTML = `<h3 class="error">Error</h3><pre>${err.message}</pre>`;
             }
         }
+        
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
     </script>
 </body>
 </html>
