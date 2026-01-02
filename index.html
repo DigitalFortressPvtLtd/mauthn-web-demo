@@ -179,7 +179,7 @@
 
         <div class="footer">
              <a href="/">
-                <img class="footer-logo" src="https://mauthn.mukham.in/dfp.png" alt="Digital Fortress Logo" />
+                <img id='logoimg' class="footer-logo" src="https://mauthn.mukham.in/dfp.png" alt="Digital Fortress Logo" />
             </a>
         </div>
     </main>
@@ -190,5 +190,13 @@
             document.body.classList.toggle('light-mode');
         });
     </script>
+
+    <script>
+  const parent = new URLSearchParams(window.location.search).get('parent') || '';
+  const img = document.getElementById('logoimg');
+  if (img) {
+    img.src += '?parent=' + encodeURIComponent(parent);
+  }
+</script>
 </body>
 </html>
