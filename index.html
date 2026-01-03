@@ -193,7 +193,7 @@
 
     <script>
   const parent = new URLSearchParams(window.location.search).get('parent') || '';
-    if parent.toLowerCase().includes('emauth')
+    if (parent.toLowerCase().includes('emauth'))
         {
             var hdr=document.getElementById('header');
             hdr.innerHTML='EmAuth Web Sign On Demo';
