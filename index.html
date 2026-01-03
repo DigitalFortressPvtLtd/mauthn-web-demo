@@ -168,7 +168,7 @@
     <main>
         <img src="https://mauthn.mukham.in/logo.png" alt="MAuthN Logo" class="logo">
         <div class="header">
-            <h1>MAuthN Web Sign On Demo</h1>
+            <h1 id="header">MAuthN Web Sign On Demo</h1>
             <p>Choose your preferred login method.</p>
         </div>
         
@@ -178,9 +178,9 @@
         </div>
 
         <div class="footer">
-             <a href="/">
+             
                 <img id='logoimg' class="footer-logo" src="https://mauthn.mukham.in/dfp.png" alt="Digital Fortress Logo" />
-            </a>
+            
         </div>
     </main>
 
@@ -193,6 +193,11 @@
 
     <script>
   const parent = new URLSearchParams(window.location.search).get('parent') || '';
+    if parent.toLowerCase().includes('emauth')
+        {
+            var hdr=document.getElementById('header');
+            hdr.innerHTML='EmAuth Web Sign On Demo';
+        }
   const img = document.getElementById('logoimg');
   if (img) {
     img.src += '?parent=' + encodeURIComponent(parent);
